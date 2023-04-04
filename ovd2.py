@@ -25,7 +25,7 @@ def main():
 
     # API -> fn_out
     fn_out = f'{dirPickle}/{tbl}.txt'
-    # xs = get_all_articles(params_extra, fn_out)
+    # ds = get_all_articles(params_extra, fn_out)
 
     # fn_in -> df
     fn_in = fn_out
@@ -50,8 +50,8 @@ def main():
 def get_all_articles(params_extra={}, fn_out=None):
     endpoint = "articles/search"
     bPost = True
-    xs = get_all_x_cursor(endpoint, params_extra, fn_out, bPost)
-    return xs
+    ds = get_all_x_cursor(endpoint, params_extra, fn_out, bPost)
+    return ds
 
 
 # --- Get article-counts/stats for all articles in df
@@ -148,7 +148,7 @@ def get_all_x_cursor(
         i = 0
         total = 0
         bReturn = True
-        xs = []
+        ds = []
 
         bContinue = True
         while True:
@@ -173,9 +173,9 @@ def get_all_x_cursor(
                 session.headers.update(headers)
 
             print(f"i: {i} | url: {url} | pms: {params}")
-            xs = r.json()
+            ds = r.json()
             with open(fn_out, "ab+") as fp:
-                for x in xs:
+                for x in ds:
                     if type(x) is dict:
                         total += 1
                         # print(f'x -> {x} | type_x -> {type(x)}')
@@ -183,16 +183,16 @@ def get_all_x_cursor(
                         print(s)
                         # print("---")
                         pickle.dump(x, fp)
-                        if x["id"] in xs:
+                        if x["id"] in ds:
                             print("Already got this id. Aborting")
                             exit(1)
                         else:
-                            xs.append(x["id"])
+                            ds.append(x["id"])
 
         if bReturn is True:
-            print(f"Done. See {fn_out} and in opal.xs")
+            print(f"Done. See {fn_out} and in opal.ds")
 
-        return xs
+        return ds
 
 
 if __name__ == '__main__':
